@@ -74,6 +74,7 @@
       justify-content: center;
       font-size: 2rem;
       color: #999;
+      padding-bottom: 20px;
     }
 
     .color-info {
@@ -84,7 +85,7 @@
       font-size: 2rem;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
     .color-hex {
@@ -950,8 +951,6 @@
           // Atualizar informações
           info.innerHTML = `
             <div class="color-position" style="color: ${color.hex}">${color.pos}</div>
-            <div class="color-hex">${color.hex.toUpperCase()}</div>
-            <div class="color-cmyk">CMYK(${color.cmyk})</div>
           `;
           
           // Remover animação após completar
