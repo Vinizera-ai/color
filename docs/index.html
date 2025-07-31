@@ -49,8 +49,8 @@
     }
 
     .color-display {
-      background: rgba(0, 0, 0, 0.168);
-      backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 30px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
@@ -73,7 +73,7 @@
       align-items: center;
       justify-content: center;
       font-size: 2rem;
-      color: #white;
+      color: #999;
     }
 
     .color-info {
@@ -83,22 +83,23 @@
     .color-position {
       font-size: 2rem;
       font-weight: 700;
-      color: white;
+      color: #ffffff;
       margin-bottom: 10px;
     }
 
     .color-hex {
       font-size: 1.3rem;
       font-weight: 600;
-      color: white;
+      color: #ffffff;
       margin-bottom: 8px;
       font-family: 'Courier New', monospace;
     }
 
     .color-cmyk {
       font-size: 1rem;
-      color: #888;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
+      padding-bottom: 20px;
     }
 
     .draw-button {
@@ -255,9 +256,26 @@
         padding: 25px 20px;
       }
 
+      .colors-grid {
+        gap: 15px;
+      }
+
       .color-preview {
-        width: 100px;
-        height: 100px;
+        width: 70px;
+        height: 70px;
+        font-size: 1.3rem;
+      }
+
+      .color-position {
+        font-size: 1.1rem;
+      }
+
+      .color-hex {
+        font-size: 0.8rem;
+      }
+
+      .color-cmyk {
+        font-size: 0.6rem;
       }
 
       .draw-button {
@@ -282,18 +300,26 @@
         margin: 0 10px;
       }
 
+      .colors-grid {
+        gap: 12px;
+      }
+
       .color-preview {
-        width: 80px;
-        height: 80px;
-        font-size: 1.5rem;
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
       }
 
       .color-position {
-        font-size: 1.6rem;
+        font-size: 1rem;
       }
 
       .color-hex {
-        font-size: 1.1rem;
+        font-size: 0.75rem;
+      }
+
+      .color-cmyk {
+        font-size: 0.55rem;
       }
 
       .draw-button {
@@ -311,16 +337,36 @@
     </div>
 
     <div class="color-display" id="colorDisplay">
-      <div class="color-preview" id="colorPreview">
-        🎲
-      </div>
-      <div class="color-info">
-        <div class="empty-state">Clique no botão abaixo para sortear uma cor!</div>
+      <div class="colors-grid" id="colorsGrid">
+        <div class="color-item">
+          <div class="color-preview">🎲</div>
+          <div class="color-info">
+            <div class="empty-state">Sortear 4 cores</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-preview">🎲</div>
+          <div class="color-info">
+            <div class="empty-state">ao mesmo tempo!</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-preview">🎲</div>
+          <div class="color-info">
+            <div class="empty-state">Clique no botão</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-preview">🎲</div>
+          <div class="color-info">
+            <div class="empty-state">abaixo!</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <button class="draw-button" onclick="drawRandom()">
-      Sortear Cor
+      Sortear 4 Cores
     </button>
 
     <button class="grid-toggle" onclick="toggleGrid()">
@@ -333,7 +379,8 @@
   </div>
 
   <script>
-        const colors = [
+    // Array de cores - você pode substituir aqui
+           const colors = [
             { pos: "A1", hex: "#602A0F", cmyk: "0, 56, 84, 62" },
             { pos: "A2", hex: "#6B2610", cmyk: "0, 64, 85, 58" },
             { pos: "A3", hex: "#752214", cmyk: "0, 71, 83, 54" },
@@ -816,7 +863,11 @@
             { pos: "P30", hex: "#0EA7D7", cmyk: "93, 22, 0, 16" },
         ];
 
- let gridVisible = false;
+      // Adicione suas cores aqui no formato:
+      // { pos: "A1", hex: "#602A0F", cmyk: "0, 56, 84, 62" },
+
+
+    let gridVisible = false;
 
     function initializeGrid() {
       const grid = document.getElementById('grid');
@@ -862,37 +913,53 @@
         return;
       }
 
-      const random = colors[Math.floor(Math.random() * colors.length)];
+      if (colors.length < 4) {
+        alert('É necessário ter pelo menos 4 cores no array para sortear 4 cores diferentes.');
+        return;
+      }
+
+      const colorsGrid = document.getElementById("colorsGrid");
       const display = document.getElementById("colorDisplay");
-      const preview = document.getElementById("colorPreview");
       
-      // Adicionar animação
+      // Adicionar animação ao container principal
       display.classList.remove('animate');
-      preview.classList.remove('animate');
-      
       setTimeout(() => {
         display.classList.add('animate');
-        preview.classList.add('animate');
       }, 50);
 
-      // Atualizar preview
-      preview.style.backgroundColor = random.hex;
-      preview.textContent = '';
-      
-      // Calcular se a cor é clara ou escura para o texto
-      const hex = random.hex.replace('#', '');
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-      const textColor = brightness > 125 ? '#333' : '#fff';
+      // Sortear 4 cores diferentes
+      const shuffled = [...colors].sort(() => 0.5 - Math.random());
+      const selectedColors = shuffled.slice(0, 4);
 
-      // Atualizar informações
-      display.querySelector('.color-info').innerHTML = `
-        <div class="color-position" style="color: ${random.hex}">${random.pos}</div>
-        <div class="color-hex">${random.hex.toUpperCase()}</div>
-        <div class="color-cmyk">CMYK(${random.cmyk})</div>
-      `;
+      // Atualizar cada cor
+      const colorItems = colorsGrid.querySelectorAll('.color-item');
+      
+      selectedColors.forEach((color, index) => {
+        const colorItem = colorItems[index];
+        const preview = colorItem.querySelector('.color-preview');
+        const info = colorItem.querySelector('.color-info');
+        
+        // Adicionar animação individual com delay
+        setTimeout(() => {
+          preview.classList.add('animate');
+          
+          // Atualizar preview
+          preview.style.backgroundColor = color.hex;
+          preview.textContent = '';
+          
+          // Atualizar informações
+          info.innerHTML = `
+            <div class="color-position" style="color: ${color.hex}">${color.pos}</div>
+            <div class="color-hex">${color.hex.toUpperCase()}</div>
+            <div class="color-cmyk">CMYK(${color.cmyk})</div>
+          `;
+          
+          // Remover animação após completar
+          setTimeout(() => {
+            preview.classList.remove('animate');
+          }, 800);
+        }, index * 150); // Delay escalonado para cada cor
+      });
     }
 
     function toggleGrid() {
